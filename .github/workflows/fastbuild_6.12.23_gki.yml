@@ -106,7 +106,7 @@ jobs:
       actions: write
       contents: read
     steps:
-      - name: 安装环境依赖+初始化源码仓库及llvm-clang19工具链
+      - name: 安装环境依赖+初始化源码仓库及llvm-clang22工具链
         run: |
           rm -rf kernel_workspace
           mkdir kernel_workspace
@@ -135,25 +135,25 @@ jobs:
           mv "android_gki_kernel_common-android16-6.12-2025-06" common &&
           rm -rf common.zip &
           
-          echo "正在克隆llvm-clang19工具链..." &&
-          mkdir -p clang19 &&
-          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang19-r536225/clang-r536225.zip -o clang.zip &&
-          unzip -q clang.zip -d clang19 &&
+          echo "正在克隆llvm-clang22工具链..." &&
+          mkdir -p clang22 &&
+          aria2c -s16 -x16 -k1M https://github.com/skblt/android_gki_kernel_common/releases/download/tool/clang-r536225.zip -o clang.zip &&
+          unzip -q clang.zip -d clang22 &&
           rm -rf clang.zip &
           
           echo "正在克隆Rust 1.82.0工具链..." &&
           mkdir -p rust &&
-          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang19-r536225/rust.zip -o rust.zip &&
+          aria2c -s16 -x16 -k1M https://github.com/skblt/android_gki_kernel_common/releases/download/tool/rust.zip -o rust.zip &&
           unzip -q rust.zip -d rust &&
           rm -rf rust.zip &
           
           echo "正在克隆构建工具..." &&
-          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang19-r536225/build-tools.zip -o build-tools.zip &&
+          aria2c -s16 -x16 -k1M https://github.com/skblt/android_gki_kernel_common/releases/download/tool/build-tools.zip -o build-tools.zip &&
           unzip -q build-tools.zip &&
           rm -rf build-tools.zip &
           
           wait
-          echo "所有源码及llvm-clang19工具链初始化完成！"
+          echo "所有源码及llvm-clang22工具链初始化完成！"
           echo "正在去除 dirty 后缀..."
           for f in common/scripts/setlocalversion; do
             sed -i 's/ -dirty//g' "$f"
@@ -559,10 +559,10 @@ jobs:
         run: |
           WORKDIR="$(pwd)"
           export PATH="/usr/lib/ccache:$PATH"
-          export PATH="$WORKDIR/kernel_workspace/clang19/bin:$PATH"
+          export PATH="$WORKDIR/kernel_workspace/clang22/bin:$PATH"
           export PATH="$WORKDIR/kernel_workspace/build-tools/bin:$PATH"
           export PATH="$WORKDIR/kernel_workspace/rust/bin:$PATH"
-          export CLANG_DIR="$WORKDIR/kernel_workspace/clang19/bin"
+          export CLANG_DIR="$WORKDIR/kernel_workspace/clang22/bin"
           CLANG_VERSION="$($CLANG_DIR/clang --version | head -n 1)"
           LLD_VERSION="$($CLANG_DIR/ld.lld --version | head -n 1)"
           RUSTC_VERSION="$(rustc -V 2>/dev/null | head -n1)"
@@ -594,7 +594,7 @@ jobs:
           echo "FAKETIME=$FAKETIME" >> $GITHUB_ENV
           SO_DIR=$(pwd)
           export PRELOAD_LIBS="$SO_DIR/libfakestat.so $SO_DIR/libfaketimeMT.so"
-          export REAL_CLANG_PATH="$WORKDIR/kernel_workspace/clang19/bin/clang"
+          export REAL_CLANG_PATH="$WORKDIR/kernel_workspace/clang22/bin/clang"
           #创建 CC (编译器) 包装器
           echo '#!/bin/bash' > cc-wrapper
           echo 'export LD_PRELOAD="'$PRELOAD_LIBS'"' >> cc-wrapper
@@ -638,7 +638,7 @@ jobs:
           export RUSTC="rustc"
           export BINDGEN="bindgen"
           export CC="clang"
-          export LIBCLANG_PATH="$WORKDIR/kernel_workspace/clang19/lib"
+          export LIBCLANG_PATH="$WORKDIR/kernel_workspace/clang22/lib"
           # 3. 配置KCFLAGS
           KCFLAGS+=" -no-canonical-prefixes"
           KCFLAGS+=" -O2"
