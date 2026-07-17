@@ -137,7 +137,7 @@ jobs:
           
           echo "正在克隆llvm-clang22工具链..." &&
           mkdir -p clang22 &&
-          aria2c -s16 -x16 -k1M https://github.com/skblt/android_gki_kernel_common/releases/download/tool/clang-r536225.zip -o clang.zip &&
+          aria2c -s16 -x16 -k1M https://github.com/cctv18/oneplus_sm8650_toolchain/releases/download/LLVM-Clang19-r536225/clang-r536225.zip -o clang.zip &&
           unzip -q clang.zip -d clang22 &&
           rm -rf clang.zip &
           
