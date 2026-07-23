@@ -202,7 +202,7 @@ jobs:
             FILE_NAME="ccache-${{ env.KERNEL_VERSION }}.${{ env.SUB_VERSION }}.tar.zst"
           fi
           
-          if gh release download -p "$FILE_NAME" -R cctv18/public_ccache; then
+          if gh release download -p "$FILE_NAME" -R skblt/public_ccache; then
             echo "成功下载 $FILE_NAME，正在解压..."
             tar -I zstd -xf "$FILE_NAME" -C ${{ env.CCACHE_DIR }}
             echo "公共 ccache 恢复完成！"
@@ -258,7 +258,7 @@ jobs:
           if [[ ${{ github.event.inputs.ksu_type }} == "sukisu" || ${{ github.event.inputs.ksu_type }} == "resukisu" ]]; then
             echo "正在配置ReSukiSU（由于SukiSU长期未维护无法正常编译，且ReSukiSU兼容sukisu管理器，故SukiSU源码仓库已重定向为resukisu）..."
             curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/refs/heads/main/kernel/setup.sh" | bash -s main
-            echo 'CONFIG_KSU_FULL_NAME_FORMAT="%TAG_NAME%-%COMMIT_SHA%@cctv18"' >> ./common/arch/arm64/configs/gki_defconfig
+            echo 'CONFIG_KSU_FULL_NAME_FORMAT="%TAG_NAME%-%COMMIT_SHA%@skblt"' >> ./common/arch/arm64/configs/gki_defconfig
             cd ./KernelSU
             # 生成自定义版本号（基于提交计数）, 失败时使用 114514
             KSU_VERSION=$(expr $(git rev-list --count main) + 30700 2>/dev/null || echo 114514)
